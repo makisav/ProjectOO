@@ -1,0 +1,1329 @@
+public abstract class User 
+
+{ 
+
+String name; 
+
+String email;     
+
+public User(String name,String email)  
+
+{ 
+
+this.name=name; 
+
+this.email=email;     
+
+} 
+
+} 
+
+public class Buyer extends User { 
+
+    int bonus; 
+
+    String buyerCategory; 
+
+    ShoppingCart buyerShoppingCart; 
+
+  
+
+    public Buyer(String name, String email, int bonus, String buyerCategory, ShoppingCart buyerShoppingCart) { 
+
+        super(name, email); 
+
+        this.bonus = bonus; 
+
+        this.buyerShoppingCart = buyerShoppingCart; 
+
+        this.buyerCategory = buyerCategory; 
+
+    } 
+
+    public String setbuyerCategory() { 
+
+        if (bonus <= 100) return "BRONZE"; 
+
+        else if (bonus > 100 && bonus < 200) return "SILVER"; 
+
+        else return "GOLD"; 
+
+    } 
+
+    public void awardBonus() { 
+
+        this.bonus = (int) this.buyerShoppingCart.calculateNet() * 1 / 10; 
+
+        this.buyerCategory = setbuyerCategory(); 
+
+    } 
+
+    public void placeOrder(Item item, int quantity) { 
+
+        this.buyerShoppingCart.addItemOrdered(item , quantity); 
+
+    } 
+
+} 
+
+public class Owner extends User 
+
+{ 
+
+boolean isAdmin= true; 
+
+public Owner(String name,String email) 
+
+{ 
+
+super(name,email); 
+
+}     
+
+} 
+
+public abstract class Item 
+
+{ 
+
+  
+
+    String name; 
+
+    double price; 
+
+    String description; 
+
+    int stock; 
+
+    int id; 
+
+     
+
+    public Item(String name,double price,String description,int stock,int id){ 
+
+     this.name=name;    
+
+     this.price=price; 
+
+     this.description=description; 
+
+     this.stock=stock; 
+
+     this.id=id; 
+
+    } 
+
+     
+
+    public String getBasicInfo(){ 
+
+         
+
+       return "The item no " + id + " named " + name + " has the following attributes " + description + " and costs " + price + " euros. There are " + stock + " available. "; 
+
+     
+
+    } 
+
+     
+
+    public abstract String getDetails(); 
+
+     
+
+    public int getId(){ 
+
+        return this.id; 
+
+    } 
+
+     
+
+    public String toString(){ 
+
+         
+
+        return getBasicInfo() + getDetails(); 
+
+         
+
+    } 
+
+     
+
+} 
+
+ 
+
+public class Pen extends Item 
+
+{ 
+
+    
+
+   String color; 
+
+   double tipSize; 
+
+    
+
+   public Pen(String name,double price,String description,int stock,int id,String color,double tipSize){ 
+
+       super(name,price,description,stock,id); 
+
+       this.color=color; 
+
+       this.tipSize=tipSize; 
+
+    } 
+
+      
+
+   public String getDetails(){ 
+
+       return " Its color is "+ this.color + " and its tip's size is "+ this.tipSize + " mm" +"." ; 
+
+    } 
+
+} 
+
+ 
+
+public class Paper extends Item 
+
+{ 
+
+   int weight; 
+
+   int pages; 
+
+    
+
+   public Paper(String name,double price,String description,int stock,int id,int weight,int pages){ 
+
+       super(name,price,description,stock,id); 
+
+       this.weight=weight; 
+
+       this.pages=pages; 
+
+    } 
+
+    
+
+   public String getDetails(){ 
+
+       return "It weights " + this.weight + " gramms and has " + this.pages + " pages" +"."; 
+
+    } 
+
+} 
+
+public class Pencil extends Item 
+
+{  
+
+  double tipSize; 
+
+  enum Type{ 
+
+    H,B,HB; 
+
+   } 
+
+  Type type; 
+
+  public Pencil(String name,double price,String description,int stock,int id,double tipSize,String type){ 
+
+       super(name,price,description,stock,id); 
+
+       this.tipSize=tipSize; 
+
+       this.type=Type.valueOf(type); 
+
+    } 
+
+  public String getDetails(){ 
+
+  
+
+          return ("It's tipe's size is " + this.tipSize + " mm and there are 3 types of pencils " + type.H + " , " + type.B + " , " + type.HB + " and its Type is " + this.type +"." ); 
+
+  
+
+  
+
+  } 
+
+} 
+
+ 
+
+public class Notebook extends Item 
+
+{ 
+
+    int sections; 
+
+     
+
+    public Notebook(String name,double price,String description,int stock,int id,int sections){ 
+
+        super(name,price,description,stock,id); 
+
+        this.sections=sections; 
+
+    } 
+
+     
+
+    public String getDetails(){ 
+
+        return "It has "+ this.sections + " sections" + "."; 
+
+    } 
+
+} 
+
+ 
+
+public class ItemOrdered 
+
+{ 
+
+  Item item; 
+
+  int quantity; 
+
+  public ItemOrdered(Item item,int quantity) 
+
+  { 
+
+    this.item=item; 
+
+    this.quantity=quantity; 
+
+  } 
+
+} 
+
+import java.util.ArrayList; 
+
+public class EShop { 
+
+    String name; 
+
+    Owner owner; 
+
+    ArrayList<Item> itemList = new ArrayList<Item>(); 
+
+    ArrayList<Buyer> buyerList= new ArrayList<Buyer>(); 
+
+  
+
+    public EShop(String name ,Owner owner){ 
+
+        this.name= name; 
+
+        this.owner=owner; 
+
+    } 
+
+    public void addItem(Pen p){ 
+
+        itemList.add(p); 
+
+    } 
+
+    public void addItem(Pencil pn){ 
+
+        itemList.add(pn); 
+
+    } 
+
+    public void addItem(Paper pr){ 
+
+        itemList.add(pr); 
+
+    } 
+
+    public void addItem(Notebook n){ 
+
+        itemList.add(n); 
+
+    } 
+
+    public void getItemById(int id){ 
+
+        for (int i=0;i<itemList.size();i++){ 
+
+            if (itemList.get(i).getId()==id){ 
+
+                System.out.println(itemList.get(i)); 
+
+            } 
+
+        } 
+
+  
+
+    } 
+
+    public void removeItem(Item item){ 
+
+        itemList.remove(item); 
+
+    } 
+
+     
+
+    public void addBuyer(Buyer b){ 
+
+        buyerList.add(b); 
+
+    } 
+
+    public void removeBuyer(Buyer b){ 
+
+        buyerList.add(b); 
+
+    } 
+
+    public void updateItemStock(Item item,int s){ 
+
+        item.stock=s; 
+
+    } 
+
+    public String showCategories (){return "In this Xristos EShop we sell Pens ,Pencils ,Paper and Notebooks";} 
+
+    public void showProductsInCategory(String item){ 
+
+        for(int i=0; i <itemList.size(); i++){ 
+
+        if (item.equals(Pencil.class.getName())){ 
+
+            if(itemList.get(i).getClass()==Pencil.class){ 
+
+                System.out.println(itemList.get(i).name);}        
+
+            }else if(item.equals(Pen.class.getName())){ 
+
+            if(itemList.get(i).getClass()==Pen.class){ 
+
+                System.out.println(itemList.get(i).name);} 
+
+        }else if (item.equals(Paper.class.getName())){ 
+
+                if(itemList.get(i).getClass()==Paper.class){ 
+
+                    System.out.println(itemList.get(i).name);} 
+
+        }else if(item.equals(Notebook.class.getName())){ 
+
+            if(itemList.get(i).getClass()==Notebook.class){ 
+
+                System.out.println(itemList.get(i).name);} 
+
+        } 
+
+        } 
+
+    } 
+
+    public void showProduct(String item) { 
+
+        for (int i = 0; i < itemList.size(); i++) { 
+
+            if (item.equals(itemList.get(i).name)) { 
+
+                System.out.println(itemList.get(i)); 
+
+            }        
+
+        } 
+
+    } 
+
+    public void checkStatus(){ 
+
+        for (int i = 0; i < buyerList.size(); i++) { 
+
+            System.out.println("This buyers name is "+buyerList.get(i).name+" ,he has "+buyerList.get(i).bonus+" bonus points and he is a "+buyerList.get(i).buyerCategory+" member");} 
+
+    } 
+
+} 
+
+import java.util.ArrayList; 
+
+  
+
+public class ShoppingCart { 
+
+  
+
+  
+
+ArrayList<ItemOrdered> itemOrderedList=new ArrayList<ItemOrdered>(); 
+
+public ShoppingCart(){} 
+
+  
+
+  
+
+public void addItemOrdered (Item item,int quantity){ 
+
+        ItemOrdered itemOrdered = new ItemOrdered(item ,quantity); 
+
+        for (int i = 0; i < itemOrderedList.size(); i++) { 
+
+            if (itemOrderedList.get(i) == itemOrdered) { 
+
+                itemOrderedList.get(i).quantity = itemOrdered.quantity; 
+
+            } 
+
+        } 
+
+        if (item.stock >= quantity) { 
+
+            item.stock -= quantity; 
+
+            itemOrderedList.add(itemOrdered); 
+
+        } else if (item.stock < quantity) { 
+
+            System.out.println("Our stock isnt enough to match your needs.We are very sorry for the inconvenience."); 
+
+        } 
+
+    } 
+
+    public void removeItemOrdered(int location){ 
+
+     ItemOrdered itemOrdered=itemOrderedList.get(location); 
+
+     itemOrdered.item.stock+= itemOrdered.quantity; 
+
+     itemOrderedList.remove(itemOrdered); 
+
+} 
+
+   public void changeItemOrderedQuantity(int location,int newQuantity){ 
+
+     if(newQuantity>itemOrderedList.get(location).quantity+itemOrderedList.get(location).item.stock){ 
+
+         System.out.println("We are very sorry but our stock isnt enough to fulfill your needs");} 
+
+     else itemOrderedList.get(location).quantity= newQuantity; 
+
+  
+
+   } 
+
+public void showCart(Buyer buyer) { 
+
+    double cost; 
+
+    if (itemOrderedList.size() == 0) { 
+
+        System.out.println("Your shopping cart is empty"); 
+
+    } else { 
+
+        System.out.println("Your shopping cart has the following items within:"); 
+
+        for (int i = 0; i < itemOrderedList.size(); i++) { 
+
+            System.out.println("Item name: " + itemOrderedList.get(i).item.name + " Quantity: " + itemOrderedList.get(i).quantity); 
+
+        } 
+
+  
+
+        System.out.print("The cost excluding shipping is " + calculateNet() + "."); 
+
+        cost = calculateNet() + calcluateCourierCost(buyer); 
+
+        System.out.println("The total of your order is " + cost + " with the shipping being " + calcluateCourierCost(buyer)); 
+
+  
+
+    } 
+
+} 
+
+   public void clearCart(){ 
+
+       for (int i = 0; i < itemOrderedList.size(); i++){ 
+
+           removeItemOrdered(i); 
+
+       } 
+
+   } 
+
+    public double calcluateCourierCost(Buyer buyer){ 
+
+     double cost=0; 
+
+     double dCost=3; 
+
+     double dTestCost=0; 
+
+     for (int i = 0; i < itemOrderedList.size(); i++) { 
+
+            cost +=itemOrderedList.get(i).item.price*itemOrderedList.get(i).quantity; 
+
+        } 
+
+        dTestCost = cost * 0.02; 
+
+  
+
+        if (dTestCost > dCost) { 
+
+            dCost=dTestCost; 
+
+        } 
+
+     if(buyer.buyerCategory.equals("GOLD")){ 
+
+         dCost=0; 
+
+     }else if(buyer.buyerCategory.equals("SILVER")){ 
+
+         dCost= dCost*0.5; 
+
+     }return dCost; 
+
+    } 
+
+    public double calculateNet(){ 
+
+     double cost=0; 
+
+        for (int i = 0; i < itemOrderedList.size(); i++) { 
+
+            cost +=itemOrderedList.get(i).item.price*itemOrderedList.get(i).quantity; 
+
+  
+
+    }return cost; 
+
+} 
+
+public void checkout(Buyer buyer,boolean pay){ 
+
+if(pay==true){ 
+
+    buyer.awardBonus(); 
+
+    for (int i = 0; i < itemOrderedList.size(); i++){ 
+
+        itemOrderedList.remove(itemOrderedList.get(i)); 
+
+    }}else if(pay==false){} 
+
+} 
+
+} 
+
+import java.util.Scanner; 
+
+public class Main { 
+
+    public static void main(String[] args) { 
+
+        ShoppingCart shop200 = new ShoppingCart(); 
+
+        Buyer makhs = new Buyer("Makhs", "makhs@yahoo.gr", 0, "BRONZE", shop200); 
+
+        Owner xristos = new Owner("Xristos", "xristosTheOwner@gmail.com"); 
+
+        EShop es = new EShop("Xristos", xristos); 
+
+        ShoppingCart shop201 = new ShoppingCart(); 
+
+        Buyer spyros = new Buyer("Spyros", "spyros@gmail.com", 0, "BRONZE", shop201); 
+
+        es.addBuyer(spyros); 
+
+        es.addBuyer(makhs); 
+
+        Pencil bic = new Pencil("Bic", 0.5, "molybi", 30, 100, 0.1, "H"); 
+
+        Pencil faber = new Pencil("Faber", 0.5, "molybi", 40, 101, 0.1, "HB"); 
+
+        Pencil castel = new Pencil("Castel", 0.5, "molybi", 50, 102, 0.1, "B"); 
+
+        Pen aks = new Pen("AKS", 2.0, "crystal pen", 15, 103, "transparent", 0.7); 
+
+        Pen parker = new Pen("Parker", 2.0, "premium pen", 25, 104, "silver", 0.6); 
+
+        Pen pilot = new Pen("Pilot", 2.0, "regular pen", 35, 105, "blue", 0.7); 
+
+        Paper universal = new Paper("Universal", 5, "paper for all purposes", 30, 106, 1000, 500); 
+
+        Paper fabriano = new Paper("Fabriano", 8, "paper for photos", 25, 107, 1250, 350); 
+
+        Paper inacopia = new Paper("Inacopia", 6.5, "paper for laser printer", 30, 108, 1100, 550); 
+
+        Notebook skag = new Notebook("SKAG", 2.0, "notebook for office ", 5, 109, 3); 
+
+        Notebook salco = new Notebook("Salco", 2.0, "notebook especialy for middle-school ", 5, 110, 4); 
+
+        Notebook blue = new Notebook("Blue", 2.0, "notebook for geometry ", 5, 111, 5); 
+
+        es.addItem(bic); 
+
+        es.addItem(faber); 
+
+        es.addItem(castel); 
+
+        es.addItem(aks); 
+
+        es.addItem(parker); 
+
+        es.addItem(pilot); 
+
+        es.addItem(universal); 
+
+        es.addItem(fabriano); 
+
+        es.addItem(inacopia); 
+
+        es.addItem(skag); 
+
+        es.addItem(salco); 
+
+        es.addItem(blue); 
+
+        Scanner text = new Scanner(System.in); 
+
+        Scanner text1 = new Scanner(System.in); 
+
+        Scanner text2 = new Scanner(System.in); 
+
+        Scanner text3 = new Scanner(System.in); 
+
+        Scanner text4 = new Scanner(System.in); 
+
+        Scanner text5 = new Scanner(System.in); 
+
+        Scanner text6 = new Scanner(System.in); 
+
+        Scanner text7 = new Scanner(System.in); 
+
+        Scanner text8 = new Scanner(System.in); 
+
+        Scanner text9 = new Scanner(System.in); 
+
+        Scanner text10 = new Scanner(System.in); 
+
+        Scanner text11 = new Scanner(System.in); 
+
+        Scanner text12 = new Scanner(System.in); 
+
+        Scanner text13 = new Scanner(System.in); 
+
+        Scanner text14 = new Scanner(System.in); 
+
+        Scanner text15 = new Scanner(System.in); 
+
+        Scanner text16 = new Scanner(System.in); 
+
+        Scanner text17 = new Scanner(System.in); 
+
+        Scanner text18 = new Scanner(System.in); 
+
+        String email; 
+
+        int i = 0; 
+
+        while (i != 1) { 
+
+            System.out.print("Enter your email:"); 
+
+            email = text.nextLine(); 
+
+            for (int j = 0; j < es.buyerList.size(); j++) { 
+
+                if (email.equals(es.buyerList.get(i).email)) { 
+
+                    
+
+                    System.out.println("Welcome back " + es.buyerList.get(j).name + " .You have " + es.buyerList.get(j).bonus + " bonus points and you are a " + es.buyerList.get(j).buyerCategory + " member."); 
+
+                    System.out.println(es.showCategories() + " and the total number of our products is: " + es.itemList.size()); 
+
+                    int penC = 0; 
+
+                    int pencilC = 0; 
+
+                    int paperC = 0; 
+
+                    int notebookC = 0; 
+
+                    for (int p = 0; p < es.itemList.size(); p++) { 
+
+                        if (es.itemList.get(p).getClass().getName().equals("Pen")) { 
+
+                            penC++; 
+
+                        } else if (es.itemList.get(p).getClass().getName().equals("Pencil")) { 
+
+                            pencilC++; 
+
+                        } else if (es.itemList.get(p).getClass().getName().equals("Paper")) { 
+
+                            paperC++; 
+
+                        } else if (es.itemList.get(p).getClass().getName().equals("Notebook")) { 
+
+                            notebookC++; 
+
+                        } 
+
+                    } 
+
+                    int check = 0; 
+
+                    while (check != 1) { 
+
+                        System.out.println("The Pens are: " + penC); 
+
+                        System.out.println("The Pencils are: " + pencilC); 
+
+                        System.out.println("The Papers are: " + paperC); 
+
+                        System.out.println("The Notebooks are: " + notebookC); 
+
+                        System.out.print("Type the category you are interested: "); 
+
+                        String category = text4.nextLine(); 
+
+                        es.showProductsInCategory(category); 
+
+                        System.out.print("Type the name of the item you are interested(Pen,Pencil,Notebook,Paper): "); 
+
+                        String product = text5.nextLine(); 
+
+                        es.showProduct(product); 
+
+                        System.out.println("Would you like to add this item to your cart? If yes enter 0 else enter 1"); 
+
+                        int decision = text6.nextInt(); 
+
+                        if (decision == 0) { 
+
+                            System.out.println("How many of this item do you want? "); 
+
+                            int quantity = text7.nextInt(); 
+
+                            for (int t = 0; t < es.itemList.size(); t++) { 
+
+                                if (es.itemList.get(t).name.equals(product)) { 
+
+                                    es.buyerList.get(j).placeOrder(es.itemList.get(t), quantity); 
+
+                                } 
+
+                            } 
+
+                        } 
+
+                        int f = 0; 
+
+                        System.out.println("Press 1 to proceed to check out or press 0 to keep browsing?"); 
+
+                        check = text8.nextInt(); 
+
+  
+
+                        while (f != 1) { 
+
+                            if (check == 0) { 
+
+                                break; 
+
+                            } 
+
+                            es.buyerList.get(j).buyerShoppingCart.showCart(es.buyerList.get(j)); 
+
+                            System.out.println("Do you want to make any changes(true or false)?"); 
+
+                            boolean change = text9.nextBoolean(); 
+
+                            if (change) { 
+
+                                System.out.println("Press 1 if you want to make changes to your shopping cart or press 0 if you want to empty it"); 
+
+                                int d = text11.nextInt(); 
+
+                                if (d == 0) { 
+
+                                    es.buyerList.get(j).buyerShoppingCart.clearCart(); 
+
+                                } else if (d == 1) { 
+
+                                    System.out.println("Which item do you want to make changes to.Enter the position of that item"); 
+
+                                    int pos = text12.nextInt(); 
+
+                                    System.out.println("Press 1 to change the quantity or 0 to remove the item completely"); 
+
+                                    int dis = text12.nextInt(); 
+
+                                    if (dis == 1) { 
+
+                                        System.out.println("Give the new quantity"); 
+
+                                        int nquantity = text13.nextInt(); 
+
+                                        es.buyerList.get(j).buyerShoppingCart.changeItemOrderedQuantity(pos, nquantity); 
+
+                                        es.buyerList.get(j).buyerShoppingCart.showCart(es.buyerList.get(j)); 
+
+                                    } 
+
+                                    if (dis == 0) { 
+
+                                        es.buyerList.get(pos).buyerShoppingCart.removeItemOrdered(pos); 
+
+                                    } 
+
+                                } 
+
+                            } else { 
+
+                                System.out.println("If you want to pay type true"); 
+
+                                boolean pay = text10.nextBoolean(); 
+
+                                if (pay) { 
+
+                                    es.buyerList.get(j).buyerShoppingCart.checkout(es.buyerList.get(j), pay); 
+
+                                    System.out.println(); 
+
+                                    check = 1; 
+
+                                    f = 1; 
+
+                                } 
+
+                            } 
+
+                        } 
+
+                    } 
+
+                    System.out.println("If you want to logout press 0 and if you want to exit press 1"); 
+
+                    i = text10.nextInt(); 
+
+                    break; 
+
+                } else if (email.equals(xristos.email)) { 
+
+                    
+
+                    System.out.println("Welcome back " + es.owner.name + " you are the owner of this Eshop"); 
+
+                    System.out.println(es.showCategories() + " and the total number of our products is: " + es.itemList.size()); 
+
+                    int penC = 0; 
+
+                    int pencilC = 0; 
+
+                    int paperC = 0; 
+
+                    int notebookC = 0; 
+
+                    for (int p = 0; p < es.itemList.size(); p++) { 
+
+                        if (es.itemList.get(p).getClass().getName().equals("Pen")) { 
+
+                            penC++; 
+
+                        } else if (es.itemList.get(p).getClass().getName().equals("Pencil")) { 
+
+                            pencilC++; 
+
+                        } else if (es.itemList.get(p).getClass().getName().equals("Paper")) { 
+
+                            paperC++; 
+
+                        } else if (es.itemList.get(p).getClass().getName().equals("Notebook")) { 
+
+                            notebookC++; 
+
+                        } 
+
+                    } 
+
+                    int check = 0; 
+
+                    while (check != 1) { 
+
+                        System.out.println("The Pens are: " + penC); 
+
+                        System.out.println("The Pencils are: " + pencilC); 
+
+                        System.out.println("The Papers are: " + paperC); 
+
+                        System.out.println("The Notebooks are: " + notebookC); 
+
+                        System.out.print("Type the category you are interested(Pen,Pencil,Notebook,Paper): "); 
+
+                        String category = text4.nextLine(); 
+
+                        es.showProductsInCategory(category); 
+
+                        System.out.print("Type the name of the item you are interested to change: "); 
+
+                        String product = text5.nextLine(); 
+
+                        es.showProduct(product); 
+
+                        System.out.println("Would you like to edit this item? If yes enter 0 else enter 1"); 
+
+                        int decision = text6.nextInt(); 
+
+                        if (decision == 0) { 
+
+                            System.out.println("How much will the new stock be? "); 
+
+                            int quantity = text7.nextInt(); 
+
+                            for (int t = 0; t < es.itemList.size(); t++) { 
+
+                                if (es.itemList.get(t).name.equals(product)) { 
+
+                                    es.updateItemStock(es.itemList.get(t), quantity); 
+
+                                } 
+
+                            } 
+
+                        } else if (decision == 1) { 
+
+                        } 
+
+                        boolean changes = true; 
+
+                        while (changes) { 
+
+                            System.out.println("Do you want make more changes? If yes press 1 else press 0"); 
+
+                            int dis = text12.nextInt(); 
+
+                            if (dis == 1) { 
+
+                                changes = false; 
+
+                            } else if (dis == 0) { 
+
+                                check = 1; 
+
+                                System.out.println("Do you want check the status of the buyers?(boolean)"); 
+
+                                boolean status = text14.nextBoolean(); 
+
+                                if (status) { 
+
+                                    es.checkStatus(); 
+
+                                    System.out.println("Do you want to see someones Shopping cart?(boolean)"); 
+
+                                    boolean show = text15.nextBoolean(); 
+
+                                    if (show) { 
+
+                                        System.out.println("Type the name of the buyer: "); 
+
+                                        String name = text16.nextLine(); 
+
+                                        int m = 0; 
+
+                                        for (int q = 0; q < es.buyerList.size(); q++) { 
+
+                                            if (name.equals(es.buyerList.get(q).name)) { 
+
+                                                es.buyerList.get(q).buyerShoppingCart.showCart(es.buyerList.get(q)); 
+
+                                                m = q; 
+
+                                            } 
+
+                                        } 
+
+                                        System.out.println("Do you want to remove the buyer?(boolean)"); 
+
+                                        boolean remove = text17.nextBoolean(); 
+
+                                        if (remove) { 
+
+                                            es.removeBuyer(es.buyerList.get(m)); 
+
+                                        } 
+
+                                    } else break; 
+
+  
+
+                                } else break; 
+
+                            } else { 
+
+                            } 
+
+                        } 
+
+                    } 
+
+                    System.out.println("Do you want to keep browsing?"); 
+
+                    boolean exit=text8.nextBoolean(); 
+
+                   
+
+                    if (exit==false) { 
+
+                        System.out.println("Press 0 to log out or press 1 exit"); 
+
+                        int check2=text16.nextInt(); 
+
+                        if (check2==1){ 
+
+                            i = 1; 
+
+                        }else if(check2==0){ 
+
+                            check=1; 
+
+                        } 
+
+                    } 
+
+                    break; 
+
+                
+
+                } else if (es.buyerList.size() == j + 1) { 
+
+                    boolean answer; 
+
+                    System.out.println("Your email was not found in our database.Would you like to register?");  
+
+                    answer = text1.nextBoolean(); 
+
+                    if (answer) { 
+
+                        System.out.println("Enter your name:"); 
+
+                        String name = text2.nextLine(); 
+
+                        System.out.println("Enter your email:"); 
+
+                        email = text3.nextLine(); 
+
+                        ShoppingCart newShoppingCart = new ShoppingCart(); 
+
+                        Buyer newBuyer = new Buyer(name, email, 0, "BRONZE", newShoppingCart); 
+
+                        es.addBuyer(newBuyer); 
+
+                        int check = 0; 
+
+                        while (check != 1) { 
+
+                            System.out.println(es.showCategories() + " and the total number of our products is: " + es.itemList.size()); 
+
+                            int penC = 0; 
+
+                            int pencilC = 0; 
+
+                            int paperC = 0; 
+
+                            int notebookC = 0; 
+
+                            for (int p = 0; p < es.itemList.size(); p++) { 
+
+                                if (es.itemList.get(p).getClass().getName().equals("Pen")) { 
+
+                                    penC++; 
+
+                                } else if (es.itemList.get(p).getClass().getName().equals("Pencil")) { 
+
+                                    pencilC++; 
+
+                                } else if (es.itemList.get(p).getClass().getName().equals("Paper")) { 
+
+                                    paperC++; 
+
+                                } else if (es.itemList.get(p).getClass().getName().equals("Notebook")) { 
+
+                                    notebookC++; 
+
+                                } 
+
+                            } 
+
+                            int check1 = 0; 
+
+                            while (check1 != 1) { 
+
+                                System.out.println("The Pens are: " + penC); 
+
+                                System.out.println("The Pencils are: " + pencilC); 
+
+                                System.out.println("The Papers are: " + paperC); 
+
+                                System.out.println("The Notebooks are: " + notebookC); 
+
+                                System.out.print("Type the category you are interested(Pen,Pencil,Notebook,Paper): "); 
+
+                                String category = text4.nextLine(); 
+
+                                es.showProductsInCategory(category); 
+
+                                System.out.print("Type the name of the item you are interested: "); 
+
+                                String product = text5.nextLine(); 
+
+                                es.showProduct(product); 
+
+                                System.out.println("Would you like to add this item to your cart? If yes enter 0 else enter 1"); 
+
+                                int decision = text6.nextInt(); 
+
+                                if (decision == 0) { 
+
+                                    System.out.println("How many of this item do you want? "); 
+
+                                    int quantity = text7.nextInt(); 
+
+                                    for (int t = 0; t < es.itemList.size(); t++) { 
+
+                                        if (es.itemList.get(t).name.equals(product)) { 
+
+                                            newBuyer.placeOrder(es.itemList.get(t), quantity); 
+
+                                        } 
+
+                                    } 
+
+                                } 
+
+                                System.out.println("Press 1 to proceed to check out or press 0 to keep browsing?"); 
+
+                                check = text8.nextInt(); 
+
+                                check1 = check; 
+
+                            } 
+
+                            int f = 0; 
+
+                                while (f != 1) { 
+
+                                    if (check == 1) { 
+
+                                        newBuyer.buyerShoppingCart.showCart(newBuyer); 
+
+                                        System.out.println("Do you want to make any changes(true or false)?"); 
+
+                                        boolean change = text9.nextBoolean(); 
+
+                                        if (change) { 
+
+                                            System.out.println("Press 1 if you want to make changes to your shopping cart or press 0 if you want to empty it"); 
+
+                                            int d = text11.nextInt(); 
+
+                                            if (d == 0) { 
+
+                                                newBuyer.buyerShoppingCart.clearCart(); 
+
+                                            } else if (d == 1) { 
+
+                                                System.out.println("Which item do you want to make changes to.Enter the position of that item"); 
+
+                                                int pos = text12.nextInt(); 
+
+                                                System.out.println("Press 1 to change the quantity or 0 to remove the item completely"); 
+
+                                                int dis = text12.nextInt(); 
+
+                                                if (dis == 1) { 
+
+                                                    System.out.println("Give the new quantity"); 
+
+                                                    int nquantity = text13.nextInt(); 
+
+                                                    newBuyer.buyerShoppingCart.changeItemOrderedQuantity(pos, nquantity); 
+
+                                                    newBuyer.buyerShoppingCart.showCart(newBuyer); 
+
+                                                } 
+
+                                                if (dis == 0) { 
+
+                                                    newBuyer.buyerShoppingCart.removeItemOrdered(pos); 
+
+                                                } 
+
+                                            } 
+
+                                        } else { 
+
+                                            System.out.println("If you want to pay type true"); 
+
+                                            boolean pay = text10.nextBoolean(); 
+
+                                            if (pay) { 
+
+                                                newBuyer.buyerShoppingCart.checkout(newBuyer, pay); 
+
+                                                f = 1; 
+
+                                                } 
+
+                                            } 
+
+                                    } 
+
+                                } 
+
+                        }System.out.println("If you want to logout press 0 and if you want to exit press 1"); 
+
+                        int check2 = text18.nextInt(); 
+
+                        if (check2==1){ 
+
+                        i = 1; 
+
+                        break; 
+
+                        }else if(check2==0){ 
+
+                            break; 
+
+                        } 
+
+                        }else break; 
+
+                } 
+
+            } 
+
+            } 
+
+        } 
+
+    } 
